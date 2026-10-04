@@ -10,3 +10,4 @@ streamlit
 notebook
 matplotlib
 uvicorn
+python-dotenv

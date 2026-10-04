@@ -10,3 +10,4 @@ models/
 # Ignore Jupyter notebook checkpoints
 .ipynb_checkpoints/
 __pycache__/
+.env
