@@ -260,7 +260,7 @@ else:
     display_df = df.drop(columns=["_ts_utc"])
     st.dataframe(
         display_df,
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         column_config={
             "Amount": st.column_config.NumberColumn(format="%,.2f"),
