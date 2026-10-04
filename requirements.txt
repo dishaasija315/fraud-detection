@@ -9,3 +9,4 @@ pymongo
 streamlit
 notebook
 matplotlib
+uvicorn
