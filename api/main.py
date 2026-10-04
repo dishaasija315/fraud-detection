@@ -55,7 +55,26 @@ class TransactionInput(BaseModel):
     )
 
 
-@app.get("/health")
+class PredictionResponse(BaseModel):
+    fraud_probability: float = Field(
+        ..., description="Predicted probability of fraud (0.0 to 1.0)"
+    )
+    is_fraud: bool = Field(
+        ..., description="Classification result using the threshold"
+    )
+    threshold_used: float = Field(
+        ..., description="Decision threshold used for prediction"
+    )
+
+
+class HealthResponse(BaseModel):
+    status: str = Field(..., description="API operational status")
+    model_loaded: bool = Field(
+        ..., description="Whether model and metadata are loaded"
+    )
+
+
+@app.get("/health", response_model=HealthResponse)
 def health_check():
     return {
         "status": "ok",
@@ -63,13 +82,13 @@ def health_check():
     }
 
 
-@app.post("/predict")
+@app.post("/predict", response_model=PredictionResponse)
 def predict(transaction: TransactionInput):
     if model is None or model_meta is None:
         raise HTTPException(status_code=500, detail="Model or metadata not loaded.")
 
     features_df = create_features(transaction, model_meta["features"])
-    
+
     # Predict fraud probability (probability of class 1)
     probabilities = model.predict_proba(features_df)
     fraud_prob = float(probabilities[0][1])
@@ -77,8 +96,8 @@ def predict(transaction: TransactionInput):
     threshold = float(model_meta["threshold"])
     is_fraud = bool(fraud_prob >= threshold)
 
-    return {
-        "fraud_probability": round(fraud_prob, 4),
-        "is_fraud": is_fraud,
-        "threshold_used": threshold,
-    }
+    return PredictionResponse(
+        fraud_probability=round(fraud_prob, 4),
+        is_fraud=is_fraud,
+        threshold_used=threshold,
+    )
