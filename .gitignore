@@ -1,0 +1,12 @@
+# Ignore virtual environment folder
+venv/
+
+# Ignore data folder
+data/
+
+# Ignore models folder
+models/
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+__pycache__/
